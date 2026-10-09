@@ -149,9 +149,17 @@
 
     /* 2x2 Photo Grid Layout */
     .photos-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 6px; flex: 1; min-height: 0; margin-bottom: 6px; }
-    .photo-cell { border: 1.5px solid #000; background: #f8fafc; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+    .photo-cell { border: 1.5px solid #000; background: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; }
     .photo-cell img { width: 100%; height: 100%; object-fit: cover; }
     .photo-ph { color: #94a3b8; font-size: 8pt; font-weight: bold; }
+    
+    /* Photo Caption Style */
+    .photo-caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(0, 0, 0, 0.65); color: #ffffff;
+      font-size: 7pt; font-weight: 600; text-align: center;
+      padding: 2px 4px; line-height: 1.1; word-break: break-word;
+    }
 
     /* Reporter Footer Box */
     .pelapor-box { border: 1.5px solid #000; padding: 4px 6px; background-color: #fff; }
@@ -352,25 +360,29 @@
         </div>
       </div>
 
-      <!-- Photos Upload -->
+      <!-- Photos Upload with Captions -->
       <div class="card">
-        <div class="card-title" id="ui_secPhotos">🖼️ 活动照片（4张）</div>
+        <div class="card-title" id="ui_secPhotos">🖼️ 活动照片与说明（4张）</div>
         <div class="grid-2">
           <div class="form-group">
             <label><span class="ui_lblPhotoWord">照片</span> 1</label>
             <input type="file" id="photo1" accept="image/*" onchange="loadPhoto(event, 1)">
+            <input type="text" id="caption1" class="caption-input" placeholder="照片 1 说明/标注" style="margin-top: 4px;" oninput="updateView()">
           </div>
           <div class="form-group">
             <label><span class="ui_lblPhotoWord">照片</span> 2</label>
             <input type="file" id="photo2" accept="image/*" onchange="loadPhoto(event, 2)">
+            <input type="text" id="caption2" class="caption-input" placeholder="照片 2 说明/标注" style="margin-top: 4px;" oninput="updateView()">
           </div>
           <div class="form-group">
             <label><span class="ui_lblPhotoWord">照片</span> 3</label>
             <input type="file" id="photo3" accept="image/*" onchange="loadPhoto(event, 3)">
+            <input type="text" id="caption3" class="caption-input" placeholder="照片 3 说明/标注" style="margin-top: 4px;" oninput="updateView()">
           </div>
           <div class="form-group">
             <label><span class="ui_lblPhotoWord">照片</span> 4</label>
             <input type="file" id="photo4" accept="image/*" onchange="loadPhoto(event, 4)">
+            <input type="text" id="caption4" class="caption-input" placeholder="照片 4 说明/标注" style="margin-top: 4px;" oninput="updateView()">
           </div>
         </div>
       </div>
@@ -445,10 +457,18 @@
 
           <!-- 4 Photos Grid (2x2) -->
           <div class="photos-grid">
-            <div class="photo-cell" id="box1"><span class="photo-ph">[ 照片 1 ]</span></div>
-            <div class="photo-cell" id="box2"><span class="photo-ph">[ 照片 2 ]</span></div>
-            <div class="photo-cell" id="box3"><span class="photo-ph">[ 照片 3 ]</span></div>
-            <div class="photo-cell" id="box4"><span class="photo-ph">[ 照片 4 ]</span></div>
+            <div class="photo-cell" id="box1">
+              <span class="photo-ph" id="ui_photoPh1">[ 照片 1 ]</span>
+            </div>
+            <div class="photo-cell" id="box2">
+              <span class="photo-ph" id="ui_photoPh2">[ 照片 2 ]</span>
+            </div>
+            <div class="photo-cell" id="box3">
+              <span class="photo-ph" id="ui_photoPh3">[ 照片 3 ]</span>
+            </div>
+            <div class="photo-cell" id="box4">
+              <span class="photo-ph" id="ui_photoPh4">[ 照片 4 ]</span>
+            </div>
           </div>
 
         </div>
@@ -492,8 +512,10 @@
       lblPengenalan: "活动简介",
       lblObj: "活动目标（至少3项）",
       lblImp: "活动成效（至少3项）",
-      secPhotos: "🖼️ 活动照片（4张）",
+      secPhotos: "🖼️ 活动照片与说明（4张）",
       lblPhoto: "照片",
+      captionPlaceholder: "说明/标注",
+      photoPlaceholder: "照片",
       secTeacher: "✍️ 汇报教师信息",
       lblTeacherName: "教师姓名",
       lblPosition: "教师职位",
@@ -533,8 +555,10 @@
       lblPengenalan: "Pengenalan Program",
       lblObj: "Objektif Program (Sekurang-kurangnya 3)",
       lblImp: "Impak Program (Sekurang-kurangnya 3)",
-      secPhotos: "🖼️ Gambar Aktiviti (4 Keping)",
+      secPhotos: "🖼️ Gambar & Keterangan (4 Keping)",
       lblPhoto: "Gambar",
+      captionPlaceholder: "Keterangan / Label",
+      photoPlaceholder: "Gambar",
       secTeacher: "✍️ Maklumat Pelapor Program",
       lblTeacherName: "Nama Guru Pelapor",
       lblPosition: "Jawatan Guru",
@@ -574,8 +598,10 @@
       lblPengenalan: "Program Introduction",
       lblObj: "Program Objectives (Min 3 points)",
       lblImp: "Program Impact (Min 3 points)",
-      secPhotos: "🖼️ Activity Photos (4 Photos)",
+      secPhotos: "🖼️ Activity Photos & Captions (4 Photos)",
       lblPhoto: "Photo",
+      captionPlaceholder: "Caption / Label",
+      photoPlaceholder: "Photo",
       secTeacher: "✍️ Reporting Teacher Details",
       lblTeacherName: "Reporting Teacher Name",
       lblPosition: "Teacher Designation",
@@ -609,6 +635,75 @@
 
   // 全多语言预设活动数据库
   const presets = {
+    hui_chun: {
+      school: { zh: "晏斗中华小学 SJK (C) CHUNG HUA RANTAU", ms: "SJK (C) CHUNG HUA RANTAU", en: "SJK (C) CHUNG HUA RANTAU" },
+      title: { zh: "校级新春挥春比赛", ms: "PERTANDINGAN KALIGRAFI HUI CHUN PERINGKAT SEKOLAH", en: "SCHOOL HUI CHUN CALLIGRAPHY COMPETITION" },
+      tarikh: "11.02.2026", masa: "8:00 AM – 10:30 AM",
+      penglibatan: { zh: "全体师生", ms: "SEMUA WARGA SEKOLAH", en: "ALL SCHOOL MEMBERS" },
+      pengenalan: {
+        zh: "本校举办农历新年挥春比赛，旨在发扬中华传统书法艺术，营造浓厚的节日氛围，并培养学生对汉字书写美感的欣赏能力。",
+        ms: "Pertandingan Kaligrafi Hui Chun dianjurkan sempena Sambutan Tahun Baru Cina bagi memelihara warisan seni kaligrafi dan menyemarakkan suasana perayaan.",
+        en: "The Hui Chun competition is organized in celebration of Chinese New Year to preserve traditional calligraphy art and foster appreciation for Chinese characters."
+      },
+      objektif: {
+        zh: "• 传承与弘扬中华优秀传统书法文化。\n• 提高学生的毛笔书写水平与艺术审美素养。\n• 增进校园内浓厚的春意与节日喜庆气氛。",
+        ms: "• Memelihara dan memartabatkan warisan seni kaligrafi Cina.\n• Meningkatkan kemahiran penulisan kaligrafi dan estetika seni murid.\n• Menyemarakkan suasana kebudayaan dan perayaan di sekolah.",
+        en: "• To preserve and promote Chinese traditional calligraphy art.\n• To improve students' brushwriting technique and aesthetic appreciation.\n• To enhance the festive New Year atmosphere across the campus."
+      },
+      impak: {
+        zh: "• 学生们表现专注，挥毫写下充满祝福的春联。\n• 校园内展示了丰富的挥春作品，充满了喜庆气息。\n• 有效激发了学生对学习传统艺术与汉字的兴趣。",
+        ms: "• Murid tekun menghasilkan karya kaligrafi bermakna dan indah.\n• Hasil karya murid dipamerkan sekali gus menceriakan suasana sekolah.\n• Memupuk minat murid terhadap seni penulisan dan kebudayaan.",
+        en: "• Students engaged with focus, creating expressive spring couplets.\n• Student artworks were displayed, decorating the campus dynamically.\n• Successfully sparked student enthusiasm for traditional Chinese calligraphic arts."
+      },
+      teacher: { zh: "曾佳薇老师", ms: "PN. CHEN CHIA WEI", en: "MS. CHEN CHIA WEI" },
+      position: { zh: "书法与中华文化负责老师", ms: "PENYELARAS KELAB KALIGRAFI", en: "CALLIGRAPHY CLUB COORDINATOR" }
+    },
+    shu_fa: {
+      school: { zh: "晏斗中华小学 SJK (C) CHUNG HUA RANTAU", ms: "SJK (C) CHUNG HUA RANTAU", en: "SJK (C) CHUNG HUA RANTAU" },
+      title: { zh: "校级书法比赛", ms: "PERTANDINGAN SENI KALIGRAFI PERINGKAT SEKOLAH", en: "SCHOOL CHINESE CALLIGRAPHY COMPETITION" },
+      tarikh: "15.04.2026", masa: "8:00 AM – 10:30 AM",
+      penglibatan: { zh: "三至六年级学生", ms: "MURID TAHUN 3 - 6", en: "STANDARD 3 - 6 STUDENTS" },
+      pengenalan: {
+        zh: "校级书法比赛旨在培养学生沉着冷静的心性，提升毛笔笔法、结构掌控与书法艺术修养，发掘优秀书法苗子。",
+        ms: "Pertandingan Seni Kaligrafi dianjurkan bagi membina ketenangan minda, menguasai teknik garisan dan struktur tulisan, serta mencungkil bakat seni murid.",
+        en: "The Chinese Calligraphy Competition aims to cultivate patience, refine brush control techniques, and discover outstanding calligraphic talents."
+      },
+      objektif: {
+        zh: "• 培养学生细心、静心与持之以恒的书写品质。\n• 提升汉字结构美感与毛笔运笔技巧。\n• 选拔优秀书法选手代表学校参加校际与县级书法大赛。",
+        ms: "• Memupuk sifat kesabaran, ketenangan, dan disiplin tinggi murid.\n• Meningkatkan kemahiran mengawal berus dan struktur watak tulisan.\n• Memilih wakil sekolah ke Pertandingan Kaligrafi peringkat daerah.",
+        en: "• To instill mindfulness, focus, and perseverance in handwriting.\n• To master brush stroke control and character structural balance.\n• To select calligraphic representatives for district-level competitions."
+      },
+      impak: {
+        zh: "• 参赛选手展现了极高的书法技巧与静心书写风貌。\n• 评选出了多幅笔法稳健、结构严谨的优秀书法作品。\n• 组建了代表学校备战外赛的书法代表队。",
+        ms: "• Peserta menampakkan teknik penulisan yang mantap dan berdisiplin.\n• Karya tulisan cemerlang berjaya dipilih menerusi penilaian teliti.\n• Skuad kaligrafi sekolah berjaya dibentuk ke pertandingan luar.",
+        en: "• Participants displayed steady brushwork and serene composure.\n• Selected multiple top-tier artworks demonstrating excellent structure.\n• Successfully formed the school calligraphy squad for future contests."
+      },
+      teacher: { zh: "曾佳薇老师", ms: "PN. CHEN CHIA WEI", en: "MS. CHEN CHIA WEI" },
+      position: { zh: "华文科与书法学会指导老师", ms: "PENYELARAS KELAB KALIGRAFI", en: "CALLIGRAPHY CLUB INSTRUCTOR" }
+    },
+    ying_bi_zi: {
+      school: { zh: "晏斗中华小学 SJK (C) CHUNG HUA RANTAU", ms: "SJK (C) CHUNG HUA RANTAU", en: "SJK (C) CHUNG HUA RANTAU" },
+      title: { zh: "校级硬笔字书写比赛", ms: "PERTANDINGAN TULISAN KEMAS / PENULISAN HARD-PEN PERINGKAT SEKOLAH", en: "SCHOOL HARD-PEN CALLIGRAPHY / HANDWRITING COMPETITION" },
+      tarikh: "18.04.2026", masa: "8:00 AM – 9:30 AM",
+      penglibatan: { zh: "一至六年级学生", ms: "SEMUA MURID TAHUN 1 - 6", en: "ALL STANDARD 1 - 6 STUDENTS" },
+      pengenalan: {
+        zh: "硬笔字比赛旨在规范学生的书写姿势，培养良好的书写习惯，提高汉字硬笔书写规范与结构美感。",
+        ms: "Pertandingan tulisan kemas dianjurkan bagi memupuk sikap penulisan tulisan tangan yang berdisiplin, kemas, dan menguasai struktur watak tulisan dengan betul.",
+        en: "The hard-pen handwriting competition aims to regulate posture, foster neat writing habits, and improve structural precision in handwriting."
+      },
+      objektif: {
+        zh: "• 培养学生良好的坐姿与执笔书写习惯。\n• 提高学生笔画笔顺规范及汉字结构间架美感。\n• 激发学生对写好规范字与硬笔书法的兴趣。",
+        ms: "• Memupuk tabiat postur duduk dan pegangan pena yang betul.\n• Meningkatkan kemahiran struktur watak tulisan tangan dan susunan kemas.\n• Menyemarakkan minat murid untuk menghasilkan tulisan tangan yang indah.",
+        en: "• To instill proper sitting posture and pen-holding techniques.\n• To enhance stroke order accuracy and character structural balance.\n• To inspire interest in beautiful and neat hard-pen handwriting."
+      },
+      impak: {
+        zh: "• 学生作业与卷面书写整洁度得到显著提升。\n• 展出了多幅运笔流畅、端庄美观的硬笔字优秀作品。\n• 增强了学生书写规范汉字的自信心。",
+        ms: "• Kejelasan dan kekemasan tulisan tangan murid meningkat dengan ketara.\n• Hasil karya tulisan tangan yang kemas dipamerkan untuk teladan murid lain.\n• Meningkatkan keyakinan murid dalam penulisan tulisan tangan.",
+        en: "• Noticeable improvement in student handwriting neatness across classes.\n• Excellent handwriting pieces were exhibited to showcase proper penmanship.\n• Boosted students' confidence in standard character penmanship."
+      },
+      teacher: { zh: "曾佳薇老师", ms: "PN. CHEN CHIA WEI", en: "MS. CHEN CHIA WEI" },
+      position: { zh: "华文科负责老师", ms: "PENYELARAS PANITIA BAHASA CINA", en: "CHINESE SUBJECT COORDINATOR" }
+    },
     yun_dong_hui: {
       school: { zh: "晏斗中华小学 SJK (C) CHUNG HUA RANTAU", ms: "SJK (C) CHUNG HUA RANTAU", en: "SJK (C) CHUNG HUA RANTAU" },
       title: { zh: "校级年度运动会", ms: "KEJOHANAN SUKAN TAHUNAN PERINGKAT SEKOLAH", en: "ANNUAL SCHOOL SPORTS DAY" },
@@ -1390,16 +1485,115 @@
       },
       teacher: { zh: "李健伟老师", ms: "EN. LEE KIN WAI", en: "MR. LEE KIN WAI" },
       position: { zh: "历史科小组主任", ms: "KETUA PANITIA SEJARAH", en: "HEAD OF HISTORY SUBJECT" }
+    },
+tilawah_quran: {
+      school: { zh: "晏斗中华小学 SJK (C) CHUNG HUA RANTAU", ms: "SJK (C) CHUNG HUA RANTAU", en: "SJK (C) CHUNG HUA RANTAU" },
+      title: { zh: "校级古兰经诵读比赛（Tilawah Al-Quran）", ms: "PERTANDINGAN TILAWAH AL-QURAN PERINGKAT SEKOLAH", en: "SCHOOL TILAWAH AL-QURAN COMPETITION" },
+      tarikh: "12.05.2026", masa: "8:00 AM – 11:30 AM",
+      penglibatan: { zh: "三至六年级伊斯兰教学生", ms: "MURID BERAGAMA ISLAM TAHUN 3 - 6", en: "MUSLIM STUDENTS (STD 3-6)" },
+      pengenalan: {
+        zh: "古兰经诵读比赛旨在提高学生的经文诵读技巧、发音准确度（Tajwid）与发音韵律美，培养遵从古兰经教导的端正品德。",
+        ms: "Pertandingan Tilawah Al-Quran dianjurkan bagi menguji keupayaan murid dalam menguasai hukum tajwid, kelancaran bacaan, kelantangan suara, dan lagu bacaan Al-Quran.",
+        en: "The Tilawah Al-Quran contest assesses students' recitation fluency, Tajweed accuracy, vocal projection, and melodic recitation rules."
+      },
+      objektif: {
+        zh: "• 准确掌握古兰经诵读的发音规则（Tajwid）与韵律风格。\n• 培养每日勤于诵读经文与注重道德修养的良好习惯。\n• 遴选优秀诵读代表参加校际及县级（MTQSS）古兰经诵读大赛。",
+        ms: "• Memantapkan penguasaan hukum tajwid dan kelancaran bacaan Al-Quran.\n• Memupuk pembudayaan membaca Al-Quran dalam kehidupan harian murid.\n• Memilih wakil sekolah ke Majlis Tadarus Al-Quran Sekolah-Sekolah (MTQSS).",
+        en: "• To master Tajweed recitation rules and proper melodic pronunciation.\n• To build daily Quranic reading habits and personal moral excellence.\n• To select qualified representatives for the inter-school MTQSS contest."
+      },
+      impak: {
+        zh: "• 参赛选手展现了清晰流畅、发音标准的古兰经诵读水准。\n• 提高了学生对正确发音规则（Tajwid）的重视与理解。\n• 成功遴选出代表学校备战外赛的古兰经诵读精英。",
+        ms: "• Peserta memperlihatkan kelancaran dan ketepatan hukum tajwid yang tinggi.\n• Meningkatkan kesedaran tentang keutamaan membaca Al-Quran dengan bertajwid.\n• Berjaya membina skuad tilawah sekolah ke peringkat daerah.",
+        en: "• Contestants showcased precise, fluent, and melodious recitations.\n• Raised awareness on proper Tajweed and pronunciation accuracy.\n• Successfully formed the school Tilawah representative team."
+      },
+      teacher: { zh: "阿兹曼老师", ms: "EN. AZMAN BIN AHMAD", en: "MR. AZMAN BIN AHMAD" },
+      position: { zh: "古兰经诵读指导老师", ms: "JURULATIH TILAWAH AL-QURAN", en: "TILAWAH AL-QURAN INSTRUCTOR" }
+    },
+    hafazan_quran: {
+      school: { zh: "晏斗中华小学 SJK (C) CHUNG HUA RANTAU", ms: "SJK (C) CHUNG HUA RANTAU", en: "SJK (C) CHUNG HUA RANTAU" },
+      title: { zh: "校级古兰经背诵比赛（Hafazan Al-Quran）", ms: "PERTANDINGAN HAFAZAN AL-QURAN PERINGKAT SEKOLAH", en: "SCHOOL HAFAZAN AL-QURAN COMPETITION" },
+      tarikh: "14.05.2026", masa: "8:00 AM – 11:30 AM",
+      penglibatan: { zh: "一至六年级伊斯兰教学生", ms: "MURID BERAGAMA ISLAM TAHUN 1 - 6", en: "MUSLIM STUDENTS (STD 1-6)" },
+      pengenalan: {
+        zh: "古兰经背诵比赛旨在考查学生对指定短篇经文（Juz Amma）的记忆牢固度、发音精准度与背诵流畅度。",
+        ms: "Pertandingan Hafazan Al-Quran menguji daya ingatan, ketepatan sebutan tajwid, serta kelancaran ingatan hafazan surah-surah pilihan.",
+        en: "The Hafazan Al-Quran competition tests students' memorization, fluency, and Tajweed accuracy for selected Quranic chapters."
+      },
+      objektif: {
+        zh: "• 鼓励学生从小背诵短篇经文，巩固日常礼拜的诵经基础。\n• 锻炼学生的记忆能力、专注力与宗教虔诚度。\n• 遴选代表参加县级（MTQSS）古兰经背诵大赛。",
+        ms: "• Menggalakkan murid menghafaz surah-surah lazim bagi kegunaan ibadah solat.\n• Meningkatkan daya ingatan, fokus, dan kecintaan terhadap Al-Quran.\n• Memilih wakil sekolah ke Pertandingan Hafazan MTQSS peringkat daerah.",
+        en: "• To encourage memorization of essential chapters for daily prayers.\n• To boost cognitive memory, focus, and spiritual dedication.\n• To select school representatives for regional Hafazan contests."
+      },
+      impak: {
+        zh: "• 选手们能熟练背诵多首短篇经文，记忆极其稳固。\n• 有效促进了学生在课余时间自主背诵经文的风气。\n• 选出了代表学校出征区级背诵赛的优秀小选手。",
+        ms: "• Peserta berjaya memperdengarkan hafazan dengan lancar dan yakin.\n• Menyemarakkan amalan menghafaz Al-Quran secara konsisten.\n• Senarai pemenang hafazan dipilih untuk mewakili sekolah ke peringkat luar.",
+        en: "• Contestants delivered flawless memorized recitations with high confidence.\n• Inspired consistent memorization practice habits outside classes.\n• Selected top performers for inter-school Hafazan competitions."
+      },
+      teacher: { zh: "法伊扎老师", ms: "EN. AHMAD FAIZAL", en: "MR. AHMAD FAIZAL" },
+      position: { zh: "背诵组指导老师", ms: "JURULATIH HAFAZAN AL-QURAN", en: "HAFAZAN AL-QURAN COACH" }
+    },
+    nasyid: {
+      school: { zh: "晏斗中华小学 SJK (C) CHUNG HUA RANTAU", ms: "SJK (C) CHUNG HUA RANTAU", en: "SJK (C) CHUNG HUA RANTAU" },
+      title: { zh: "校级伊斯兰赞词歌曲比赛（Festival Nasyid）", ms: "FESTIVAL & PERTANDINGAN NASYID PERINGKAT SEKOLAH", en: "SCHOOL NASYID FESTIVAL & COMPETITION" },
+      tarikh: "20.05.2026", masa: "8:00 AM – 12:00 PM",
+      penglibatan: { zh: "四、五、六年级学生", ms: "MURID TAHUN 4, 5 & 6", en: "STANDARD 4, 5 & 6 STUDENTS" },
+      pengenalan: {
+        zh: "Nasyid（伊斯兰赞词演唱）比赛结合了音乐韵律与伊斯兰正能量教诲，旨在培养学生的演唱和声、打击乐合奏与台风。",
+        ms: "Pertandingan Nasyid dianjurkan untuk membina bakat nyanyian harmoni, pukulan alat muzik perkusi, serta menyampaikan mesej dakwah menerusi lagu.",
+        en: "The Nasyid Festival merges musical harmony and positive moral messages, developing vocal synergy, percussion skills, and stage poise."
+      },
+      objektif: {
+        zh: "• 通过健康的伊斯兰音乐传播爱心、和谐与正向价值观。\n• 培养团队演唱和声默契、敲击乐配合与舞台表现力。\n• 组建学校 Nasyid 队伍代表学校参加县级/州级大赛。",
+        ms: "• Menyampaikan mesej Murni dan dakwah menerusi seni muzik nasyid.\n• Memupuk harmoni vokal, persembahan berpasukan, dan kawalan pentas.\n• Membentuk kumpulan Nasyid sekolah untuk pertandingan peringkat daerah.",
+        en: "• To convey uplifting moral messages through Islamic musical arts.\n• To build team vocal harmonies, percussion rhythm, and stage confidence.\n• To establish the official school Nasyid team for inter-school meets."
+      },
+      impak: {
+        zh: "• 各参赛队伍配合默契，呈献了动听悦耳的和声与表演。\n• 增强了学生的团队协作精神与艺术舞台自信心。\n• 成功组建了一支实力强劲的校级 Nasyid 代表队。",
+        ms: "• Pasangan nasyid menampilkan kawalan nada vokal dan keharmonisan padu.\n• Meningkatkan keyakinan pentas dan kerjasama berpasukan murid.\n• Kumpulan Nasyid utama sekolah berjaya dibentuk dengan mantap.",
+        en: "• Participating groups displayed excellent vocal blend and stage presence.\n• Strengthened teamwork, musical confidence, and stage performance.\n• Formed a solid school Nasyid team for future tournaments."
+      },
+      teacher: { zh: "阿兹曼老师", ms: "EN. AZMAN BIN AHMAD", en: "MR. AZMAN BIN AHMAD" },
+      position: { zh: "Nasyid 艺术队导师", ms: "PENYELARAS KUMPULAN NASYID", en: "NASYID TEAM COORDINATOR" }
+    },
+    seni_khat: {
+      school: { zh: "晏斗中华小学 SJK (C) CHUNG HUA RANTAU", ms: "SJK (C) CHUNG HUA RANTAU", en: "SJK (C) CHUNG HUA RANTAU" },
+      title: { zh: "校级爪夷文书法（Seni Khat）比赛", ms: "PERTANDINGAN SENI KHAT PERINGKAT SEKOLAH", en: "SCHOOL SENI KHAT CALLIGRAPHY COMPETITION" },
+      tarikh: "25.05.2026", masa: "8:00 AM – 10:30 AM",
+      penglibatan: { zh: "三至六年级学生", ms: "MURID TAHUN 3 - 6", en: "STANDARD 3 - 6 STUDENTS" },
+      pengenalan: {
+        zh: "爪夷文书法（Seni Khat）比赛旨在传承传统阿拉伯与爪夷文书法艺术，培养学生的耐心、书写结构掌控与艺术审美能力。",
+        ms: "Pertandingan Seni Khat dianjurkan bagi memelihara warisan seni tulisan Jawi/Arab, menguasai kaedah penulisan khat, serta membina ketelitian murid.",
+        en: "The Seni Khat competition preserves traditional Jawi/Arabic calligraphy arts, promoting precise penmanship, patience, and aesthetic mastery."
+      },
+      objektif: {
+        zh: "• 熟练掌握爪夷文/阿拉伯文书法的笔画、竹笔运笔与线条美感。\n• 培养静心沉着、细致耐心的书写习惯与艺术素养。\n• 选拔优秀 Khat 书法高手代表学校参加比赛。",
+        ms: "• Menguasai kaedah dan teknik penulisan Khat (Nasakh/Riq'ah) dengan betul.\n• Memupuk sifat ketelitian, kesabaran, dan kreativiti seni visual murid.\n• Memilih bakat cemerlang ke Pertandingan Seni Khat peringkat daerah.",
+        en: "• To master proper strokes and techniques of Khat calligraphy.\n• To build patience, precision, and artistic visual expression.\n• To recruit top calligraphy talents for inter-school competitions."
+      },
+      impak: {
+        zh: "• 学生展示了端正工整、线条优美的 Khat 书法作品。\n• 提升了学生对传统爪夷文书法艺术的兴趣与爱护。\n• 选出了代表学校参加区级 Khat 书法竞赛的人选。",
+        ms: "• Hasil karya seni khat murid menampakkan keindahan dan kekemasan tinggi.\n• Menyemarakkan minat terhadap warisan seni tulisan Jawi dan Arab.\n• Wakil sekolah bagi acara Seni Khat berjaya dikenal pasti.",
+        en: "• Students created beautiful and well-structured Khat artworks.\n• Increased interest and appreciation for traditional calligraphy art.\n• Selected promising calligraphers for inter-school meets."
+      },
+      teacher: { zh: "法伊扎老师", ms: "EN. AHMAD FAIZAL", en: "MR. AHMAD FAIZAL" },
+      position: { zh: "爪夷文与 Khat 书法导师", ms: "PENYELARAS SENI KHAT", en: "SENI KHAT INSTRUCTOR" }
     }
   };
 
-  // 全局变量保存上传的照片 DataURL
+  // 全局变量保存上传的照片 DataURL 及说明文本
   let photoData = {
     logo: null,
     1: null,
     2: null,
     3: null,
     4: null
+  };
+
+  let captions = {
+    1: "",
+    2: "",
+    3: "",
+    4: ""
   };
 
   // 📱 手机端标签切换 JavaScript 逻辑
@@ -1446,19 +1640,65 @@
     document.documentElement.style.setProperty('--report-font', fontFamily);
   }
 
-  // 初始化活动预设下拉框
-  function initPresetDropdown() {
-    const programSelect = document.getElementById('programSelect');
-    programSelect.innerHTML = '<option value="">-- 请选择活动预设 --</option>';
-    
-    for (let key in presets) {
-      const p = presets[key];
-      const opt = document.createElement('option');
-      opt.value = key;
-      opt.textContent = p.title[currentLang] || p.title['zh'];
-      programSelect.appendChild(opt);
+// 初始化活动预设下拉框（按类别归类排列）
+function initPresetDropdown() {
+  const programSelect = document.getElementById('programSelect');
+  const dict = i18n[currentLang] || i18n['zh'];
+  
+  // 分类定义
+  const categories = {
+    festivals: {
+      labels: { zh: "🎉 传统节日与文化庆典", ms: "🎉 SAMBUTAN PERAYAAN & KEBUDAYAAN", en: "🎉 FESTIVALS & CULTURAL CELEBRATIONS" },
+      keys: ['hui_chun', 'tahun_baru_cina', 'yuan_xiao', 'duan_wu', 'zhong_qiu', 'dong_zhi', 'hari_raya', 'deepavali', 'pesta_kaamatan_gawai']
+    },
+    sports: {
+      labels: { zh: "🏆 体育与竞技活动", ms: "🏆 SUKAN & KEJOHANAN", en: "🏆 SPORTS & ATHLETICS" },
+      keys: ['yun_dong_hui', 'lan_qiu', 'yu_mao_qiu', 'ping_pong', 'pai_qiu', 'zu_qiu', 'gao_er_fu', 'ying_shi_lan_qiu', 'merentas_desa', 'lompat_tinggi', 'lompat_jauh', 'ti_cao', 'sai_pao', 'diu_qian_qiu']
+    },
+    academic: {
+      labels: { zh: "💡 学术与学科竞赛", ms: "💡 PERTANDINGAN AKADEMIK & STEM", en: "💡 ACADEMIC & STEM COMPETITIONS" },
+      keys: ['shu_fa', 'ying_bi_zi', 'pertandingan_matematik', 'pertandingan_sains', 'pertandingan_stem', 'mewarna_merdeka', 'kuiz_merdeka']
+    },
+    speech: {
+      labels: { zh: "🗣️ 语言与演讲比赛", ms: "🗣️ BAHASA, SYARAHAN & BERCERITA", en: "🗣️ LANGUAGE, SPEECH & STORYTELLING" },
+      keys: ['storytelling_bc', 'storytelling_bm', 'storytelling_bi', 'speech_bc', 'speech_bm', 'speech_bi', 'deklamasi_sajak']
+    },
+    agama: {
+      labels: { zh: "🌙 伊斯兰宗教与节庆活动 (Agama Islam)", ms: "🌙 AKTIVITI & PERTANDINGAN AGAMA ISLAM", en: "🌙 ISLAMIC RELIGIOUS EVENTS & CONTESTS" },
+      keys: [
+        'maulidur_rasul', 
+        'isra_miraj', 
+        'nuzul_quran', 
+        'khatam_quran', 
+        'tilawah_quran', 
+        'hafazan_quran', 
+        'nasyid', 
+        'seni_khat'
+      ]
     }
+  };
+
+  programSelect.innerHTML = `<option value="">-- ${dict.lblPreset} --</option>`;
+
+  // 遍历分类并填充 optgroup
+  for (let catKey in categories) {
+    const category = categories[catKey];
+    const group = document.createElement('optgroup');
+    group.label = category.labels[currentLang] || category.labels['zh'];
+
+    category.keys.forEach(key => {
+      if (presets[key]) {
+        const p = presets[key];
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = p.title[currentLang] || p.title['zh'];
+        group.appendChild(opt);
+      }
+    });
+
+    programSelect.appendChild(group);
   }
+}
 
   // 多语言切换主函数
   function switchLanguage(lang) {
@@ -1494,6 +1734,14 @@
     document.getElementById('ui_secPhotos').innerText = dict.secPhotos;
     document.querySelectorAll('.ui_lblPhotoWord').forEach(el => el.innerText = dict.lblPhoto);
 
+    // 动态跟随语言更新照片 Input Placeholder 说明/标注
+    for (let i = 1; i <= 4; i++) {
+      const inputEl = document.getElementById(`caption${i}`);
+      if (inputEl) {
+        inputEl.placeholder = `${dict.lblPhoto} ${i} ${dict.captionPlaceholder}`;
+      }
+    }
+
     document.getElementById('ui_secTeacher').innerText = dict.secTeacher;
     document.getElementById('ui_lblTeacherName').innerText = dict.lblTeacherName;
     document.getElementById('ui_lblPosition').innerText = dict.lblPosition;
@@ -1516,6 +1764,8 @@
       document.getElementById('programSelect').value = selectedPresetKey;
       autoFillProgram(); // 刷新预设语言
     }
+
+    updateView();
   }
 
   // 选择预设时自动填充表单
@@ -1556,6 +1806,26 @@
 
     document.getElementById('viewTeacherName').innerText = document.getElementById('inputTeacherName').value || '-';
     document.getElementById('viewPosition').innerText = document.getElementById('inputPosition').value || '-';
+
+    // 同步照片 Caption 标注内容
+    for (let i = 1; i <= 4; i++) {
+      captions[i] = document.getElementById(`caption${i}`).value || '';
+      renderPhotoCell(i);
+    }
+  }
+
+  // 渲染单个照片框与其说明（Caption）
+  function renderPhotoCell(index) {
+    const box = document.getElementById(`box${index}`);
+    const imgSrc = photoData[index];
+    const capText = captions[index];
+    const dict = i18n[currentLang] || i18n['zh'];
+
+    if (imgSrc) {
+      box.innerHTML = `<img src="${imgSrc}" alt="${dict.photoPlaceholder} ${index}">${capText ? `<div class="photo-caption">${capText}</div>` : ''}`;
+    } else {
+      box.innerHTML = `<span class="photo-ph">[ ${dict.photoPlaceholder} ${index} ]</span>${capText ? `<div class="photo-caption">${capText}</div>` : ''}`;
+    }
   }
 
   // 上传校徽图片
@@ -1578,8 +1848,7 @@
       const reader = new FileReader();
       reader.onload = function(e) {
         photoData[index] = e.target.result;
-        const box = document.getElementById(`box${index}`);
-        box.innerHTML = `<img src="${e.target.result}" alt="Photo ${index}">`;
+        renderPhotoCell(index);
       };
       reader.readAsDataURL(file);
     }
@@ -1602,7 +1871,13 @@
       impak: document.getElementById('inputImpak').value,
       teacherName: document.getElementById('inputTeacherName').value,
       position: document.getElementById('inputPosition').value,
-      photoData: photoData
+      photoData: photoData,
+      captions: {
+        1: document.getElementById('caption1').value || '',
+        2: document.getElementById('caption2').value || '',
+        3: document.getElementById('caption3').value || '',
+        4: document.getElementById('caption4').value || ''
+      }
     };
 
     try {
@@ -1648,16 +1923,18 @@
     document.getElementById('inputTeacherName').value = data.teacherName || "";
     document.getElementById('inputPosition').value = data.position || "";
 
+    // 恢复 Captions
+    if (data.captions) {
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`caption${i}`).value = data.captions[i] || "";
+      }
+    }
+
     // 恢复图片数据
     if (data.photoData) {
       photoData = data.photoData;
       if (photoData.logo) {
         document.getElementById('logoBox').innerHTML = `<img src="${photoData.logo}" alt="Logo">`;
-      }
-      for (let i = 1; i <= 4; i++) {
-        if (photoData[i]) {
-          document.getElementById(`box${i}`).innerHTML = `<img src="${photoData[i]}" alt="Photo ${i}">`;
-        }
       }
     }
 
@@ -1684,12 +1961,13 @@
     document.getElementById('inputTeacherName').value = "";
     document.getElementById('inputPosition').value = "";
 
-    // 清空图片
+    // 清空图片及说明
     photoData = { logo: null, 1: null, 2: null, 3: null, 4: null };
+    captions = { 1: "", 2: "", 3: "", 4: "" };
     document.getElementById('logoBox').innerHTML = `<span style="font-size: 7pt; color: #888;">[ 校徽 LOGO ]</span>`;
     for (let i = 1; i <= 4; i++) {
-      document.getElementById(`box${i}`).innerHTML = `<span class="photo-ph">[ 照片 ${i} ]</span>`;
       document.getElementById(`photo${i}`).value = "";
+      document.getElementById(`caption${i}`).value = "";
     }
     document.getElementById('logoInput').value = "";
 
