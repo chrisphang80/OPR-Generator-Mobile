@@ -167,71 +167,37 @@
     .pelapor-name { font-size: 8pt; font-weight: bold; color: #000; }
     .pelapor-pos { font-size: 7.5pt; font-weight: normal; color: #333; }
 
-    /* 📱 手机端/小屏响应式适配 CSS */
-    @media screen and (max-width: 900px) {
-      .navbar {
-        padding: 8px 12px;
-      }
-      .navbar .brand {
-        font-size: 1rem;
-      }
-      .navbar .actions {
-        width: 100%;
-        justify-content: space-between;
-        gap: 6px;
-      }
-      .navbar .actions .btn, .navbar .actions select {
-        flex: 1;
-        font-size: 0.75rem;
-        padding: 6px 4px;
-        white-space: nowrap;
-      }
+   /* 📱 手机端/小屏响应式适配 CSS */
+@media screen and (max-width: 900px) {
+  /* ... 保留其他不变的样式 ... */
 
-      /* 启用切换页签 */
-      .mobile-view-tabs {
-        display: flex;
-      }
+  .preview-area {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-x: hidden; /* 防止出现横向滚动条 */
+  }
 
-      .app-body {
-        flex-direction: column;
-        height: calc(100vh - 105px);
-        position: relative;
-      }
+  /* 修正手机端 A4 页面缩放与显示问题 */
+  .a4-page {
+    max-width: 100%;       /* 限制最大宽度不超过手机屏幕容器 */
+    height: auto;          /* 允许高度按比例自适应 */
+    aspect-ratio: 210 / 297; /* 保持 A4 纸张的标准纵横比 */
+    transform: scale(0.95); /* 适度自适应缩放 */
+    transform-origin: top center;
+    margin: 0 auto;
+  }
+}
 
-      .sidebar {
-        width: 100%;
-        height: 100%;
-        border-right: none;
-        padding: 12px;
-      }
-
-      .preview-area {
-        width: 100%;
-        height: 100%;
-        padding: 10px;
-        display: none; /* 默认显示编辑区，切换时显示预览区 */
-        align-items: flex-start;
-      }
-
-      /* 针对手机视口的 A4 自动缩放机制 */
-      .a4-page {
-        transform: scale(0.42); /* 自动按比例适配手机屏宽 */
-        margin-top: -240px;     /* 消除缩放留白 */
-        margin-bottom: -240px;
-      }
-
-      .grid-2, .grid-3 {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media screen and (max-width: 480px) {
-      .a4-page {
-        transform: scale(0.38);
-        margin-top: -270px;
-        margin-bottom: -270px;
-      }
-    }
+@media screen and (max-width: 480px) {
+  .a4-page {
+    transform: scale(1);   /* 移动端全宽自适应 */
+    margin: 0 auto;
+  }
+}
 
     /* Print / PDF Export Styling */
     @media print {
