@@ -330,7 +330,13 @@
         <div class="card-title" id="ui_secDetails">📋 活动信息</div>
         <div class="form-group">
           <label id="ui_lblTitle">活动名称</label>
-          <input type="text" id="inputTitle" oninput="updateView()">
+          <div style="display: flex; gap: 6px;">
+            <input type="text" id="inputTitle" placeholder="输入活动名称（如：县级羽毛球比赛、参观科技馆一日游...）" oninput="updateView()" style="flex: 1;">
+            <button type="button" class="btn" onclick="aiAutoSuggest()" id="ui_btnAiSuggest" style="background: linear-gradient(135deg, #6366f1, #0284c7); color: white; white-space: nowrap; font-size: 0.8rem; border: none; font-weight: bold; padding: 6px 12px; border-radius: 6px; cursor: pointer;">
+              ✨ AI 智能建议
+            </button>
+          </div>
+          <div id="aiCategoryBadge" style="display:none; margin-top:6px; font-size:0.75rem; color:#38bdf8; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #334155; font-weight: 600;"></div>
         </div>
         <div class="grid-3">
           <div class="form-group">
@@ -2346,6 +2352,90 @@ function initPresetDropdown() {
   }
 
   // 实时同步更新预览画布内容
+  
+  // ✨ AI 智能全自动推演建议引擎 (适配 70+ 全量预设)
+  function aiAutoSuggest() {
+    const rawTitle = document.getElementById('inputTitle').value.trim();
+    const dict = i18n[currentLang] || i18n['zh'];
+    const badge = document.getElementById('aiCategoryBadge');
+
+    if (!rawTitle) {
+      alert("请先在“活动名称”框中输入活动标题！");
+      document.getElementById('inputTitle').focus();
+      return;
+    }
+
+    const titleLower = rawTitle.toLowerCase();
+    const lang = currentLang;
+
+    // 1. 优先匹配 70 项数据库预设
+    if (typeof presets !== 'undefined') {
+      for (let key in presets) {
+        const p = presets[key];
+        const pTitle = (p.title[lang] || p.title['zh']).toLowerCase();
+        if (titleLower === pTitle || pTitle.includes(titleLower) || titleLower.includes(pTitle.replace(/校级| peringkat sekolah/g, '').trim())) {
+          document.getElementById('programSelect').value = key;
+          autoFillProgram();
+          if (badge) {
+            badge.style.display = 'block';
+            badge.innerHTML = `✨ <b>AI 自动匹配既有预设</b>: ${p.title[lang]||p.title['zh']}`;
+          }
+          return;
+        }
+      }
+    }
+
+    // 2. 自定义活动智能场景识别与逻辑推演
+    let category = 'inschool';
+    const districtKeywords = ['县', '州', 'daerah', 'negeri', 'mssd', 'mssns', 'mssm', '校际', '代表队', '选拔赛', 'district', 'state', 'inter-school'];
+    const tripKeywords = ['参观', '一日游', '游学', '研学', 'lawatan', 'outing', 'field trip', 'study tour', 'trip', '农场', '博物馆', '科学馆', '动物园'];
+    const pibksKeywords = ['pibks', '家协', 'pibg', '社区', 'komuniti', 'gotong-royong', 'gotong royong', '大扫除', '义卖', 'bazaar'];
+
+    if (districtKeywords.some(k => titleLower.includes(k))) category = 'district';
+    else if (tripKeywords.some(k => titleLower.includes(k))) category = 'trip';
+    else if (pibksKeywords.some(k => titleLower.includes(k))) category = 'pibks';
+
+    let res = {};
+    if (category === 'district') {
+      res.badgeText = lang === 'zh' ? '📍 AI 智能推演：【校外 / 县级 / 州级 竞技比赛】' : '📍 Logik AI: 【Pertandingan Peringkat Daerah / Negeri】';
+      res.penglibatan = lang === 'zh' ? '学校代表队与领队老师（校外指定赛场）' : 'Wakil Sekolah & Guru Pengiring (Pusat Pertandingan Daerah)';
+      res.pengenalan = lang === 'zh' ? `本校派出精锐学生代表队伍赴校外参加【${rawTitle}】，旨在通过高水平竞技平台切磋技艺、积累实战经验。` : `Sekolah telah menghantar pasukan wakil murid bagi menyertai ${rawTitle} bagi memberi pendedahan arena pertandingan luar.`;
+      res.objektif = lang === 'zh' ? `• 为校争光，力争在县级/州级赛事中斩获优异名次。\n• 积累校外高水平竞技经验，锻炼心理素质与临场应变能力。\n• 展现良好的团队凝聚力与体育道德。` : `• Mengharumkan nama sekolah dan mencapai keputusan cemerlang di peringkat daerah.\n• Membina pengalaman pertandingan beraras tinggi.\n• Memupuk semangat kerjasama pasukan dan disiplin tinggi.`;
+      res.impak = lang === 'zh' ? `• 参赛代表展现了高度的纪律性与顽强拼搏的竞技姿态。\n• 成功在赛事中取得优异名次与荣誉，为校赢得赞誉。\n• 积累了宝贵的实战比赛经验。` : `• Peserta sekolah menampilkan semangat juang yang tinggi dan berdisiplin.\n• Berjaya merangkul kejayaan cemerlang membanggakan sekolah.\n• Menimba pengalaman bernilai.`;
+      res.captions = lang === 'zh' ? ['代表队出征/现场报到合影', '比赛现场精彩对决/拼搏瞬间', '颁奖仪式与荣誉表扬', '全体代表队与领队老师合影'] : ['Pasukan Tiba di Lokasi', 'Aksi Kejohanan Berlangsung', 'Sesi Penyampaian Hadiah', 'Gambar Kenangan Pasukan'];
+    } else if (category === 'trip') {
+      res.badgeText = lang === 'zh' ? '📍 AI 智能推演：【校外参观 / 一日游 / 研学活动】' : '📍 Logik AI: 【Lawatan Sambil Belajar / Rombongan Outing】';
+      res.penglibatan = lang === 'zh' ? '参与年级学生及带队老师（校外研学地点）' : 'Murid-murid & Guru Pengiring (Lokasi Lawatan Luar)';
+      res.pengenalan = lang === 'zh' ? `本校组织学生前往校外开展【${rawTitle}】，旨在打破传统课堂界限，让学生通过亲身观察与实践体验拓展课外视野。` : `Pihak sekolah menganjurkan program ${rawTitle} bagi memberi peluang kepada murid merasai pengalaman pembelajaran luar bilik darjah.`;
+      res.objektif = lang === 'zh' ? `• 走出课堂，通过实地观察与互动体验丰富课外见识。\n• 促进理论知识与现实生活的融会贯通。\n• 培养集体出行纪律意识与团队互助。` : `• Meluaskan horizon pengetahuan murid menerusi amali dan pemerhatian fizikal.\n• Mengaitkan teori pembelajaran di dalam kelas dengan alam realiti.\n• Memupuk sifat berdisiplin semasa aktiviti luar.`;
+      res.impak = lang === 'zh' ? `• 学生在亲身体验中汲取了丰富实用的课外新知识。\n• 全程遵守校外安全与集会纪律，展现良好的集体风貌。\n• 留下了难忘美好的研学记忆。` : `• Murid memperoleh ilmu baharu yang bermanfaat menerusi pengalaman terus.\n• Murid mematuhi peraturan keselamatan dan menunjukkan sahsiah terpuji.\n• Mencipta kenangan manis.`;
+      res.captions = lang === 'zh' ? ['学校集合整队/到达研学目的地', '现场讲解员导览与聆听常识', '学生动手体验与场馆互动环节', '研学场地全体师生合影留念'] : ['Ketibaan Murid di Lokasi', 'Sesi Penerangan & Taklimat Petugas', 'Aktiviti Interaktif & Pengalaman Amali', 'Gambar Kenangan Bersama di Lokasi'];
+    } else {
+      res.badgeText = lang === 'zh' ? '📍 AI 智能推演：【校内通用活动 / 竞技比赛】' : '📍 Logik AI: 【Program / Pertandingan Peringkat Sekolah】';
+      res.penglibatan = lang === 'zh' ? '全体师生 / 目标年级学生（校内礼堂/操场）' : 'Semua Warga Sekolah / Murid Sasaran';
+      res.pengenalan = lang === 'zh' ? `本校在校内积极推行【${rawTitle}】，旨在丰富校园生活，锻炼学生的综合技能与心理素质。` : `Pihak sekolah menganjurkan ${rawTitle} di peringkat sekolah bagi menyemarakkan suasana persekolahan.`;
+      res.objektif = lang === 'zh' ? `• 激发学生的学习兴趣与潜能，提供展示才华的舞台。\n• 培养团队合作与胜不骄败不馁的美德。\n• 选拔优秀学子代表学校参加更高级别竞赛。` : `• Mencungkil bakat dan minat murid menerusi platform yang kondusif.\n• Memupuk semangat kesukanan dan kerjasama berpasukan.\n• Memilih wakil murid yang berpotensi.`;
+      res.impak = lang === 'zh' ? `• 学生踊跃参与，现场气氛活跃，展现了蓬勃朝气。\n• 有效提升了学生的实操表达与个人自信心。\n• 成功营造了积极向上的校园风气。` : `• Penglibatan aktif murid menceriakan suasana program sekolah.\n• Meningkatkan keyakinan diri dan kemahiran murid.\n• Menyemarakkan amalan pembelajaran holistik.`;
+      res.captions = lang === 'zh' ? ['活动开幕/比赛现场全景', '学生专注投入/精彩表现瞬间', '颁奖仪式与荣誉表扬环节', '师生合影留念'] : ['Perasmian Program', 'Fokus & Aksi Peserta', 'Sesi Penyampaian Hadiah', 'Gambar Kenangan Guru & Murid'];
+    }
+
+    document.getElementById('inputPenglibatan').value = res.penglibatan;
+    document.getElementById('inputPengenalan').value = res.pengenalan;
+    document.getElementById('inputObjektif').value = res.objektif;
+    document.getElementById('inputImpak').value = res.impak;
+
+    for (let i = 1; i <= 4; i++) {
+      const capInput = document.getElementById(`caption${i}`);
+      if (capInput) capInput.value = res.captions[i - 1] || '';
+    }
+
+    if (badge) {
+      badge.style.display = 'block';
+      badge.innerHTML = res.badgeText;
+    }
+    updateView();
+  }
+
   function updateView() {
     document.getElementById('viewSchoolName').innerText = document.getElementById('inputSchoolName').value || '-';
     document.getElementById('viewTitle').innerText = document.getElementById('inputTitle').value || '-';
